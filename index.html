@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: goldenrod
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        advent-calendar {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            max-width: 90vw;
+            margin: auto;
+        }
+
+        advent-day::before {
+            content: "December";
+            font-size: 0.75em;
+        }
+
+        advent-day {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .pastday {
+            background-color: green;
+        }
+
+        .futureday {
+            background-color: red;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        advent-day {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        advent-day .inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        advent-day.flipped .inner {
+            transform: rotateY(180deg);
+        }
+
+        advent-day .front,
+        advent-day .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+
+        advent-day .back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <template id="ADVENT-DAY">
+        <div class="inner">
+            <div class="front">
+                <slot></slot>
+            </div>
+            <style>
+                .back {
+                    display: none;
+                }
+            </style>
+            <div class="back">
+                <p>Surprise!</p>
+            </div>
+        </div>
+    </template>
+    <script>
+        customElements.define('advent-day', class extends HTMLElement {
+            constructor() {
+                super()
+                    .attachShadow({ mode: 'open' })
+                    .append(
+                        document.getElementById(this.nodeName).content.cloneNode(true)
+                    );
+                this.onclick = () => this.toggleFlip();
+            }
+
+            toggleFlip() {
+                this.shadowRoot.querySelector('.inner').classList.toggle('flipped');
+            }
+        });
+    </script>
+    <h1>Web Component Advent Calendar 2024</h1>
+    <advent-calendar>
+        <advent-day>1</advent-day>
+        <advent-day>2</advent-day>
+        <advent-day>3</advent-day>
+        <advent-day>4</advent-day>
+        <advent-day>5</advent-day>
+        <advent-day>6</advent-day>
+        <advent-day>7</advent-day>
+        <advent-day>8</advent-day>
+        <advent-day>9</advent-day>
+        <advent-day>10</advent-day>
+        <advent-day>11</advent-day>
+        <advent-day>12</advent-day>
+        <advent-day>13</advent-day>
+        <advent-day>14</advent-day>
+        <advent-day>15</advent-day>
+        <advent-day>16</advent-day>
+        <advent-day>17</advent-day>
+        <advent-day>18</advent-day>
+        <advent-day>19</advent-day>
+        <advent-day>20</advent-day>
+        <advent-day>21</advent-day>
+        <advent-day>22</advent-day>
+        <advent-day>23</advent-day>
+        <advent-day>24</advent-day>
+    </advent-calendar>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date("11-12-2024");
+            const day = today.getDate();
+            document.querySelectorAll('advent-day').forEach((adventDay, index) => {
+                adventDay.classList.toggle('futureday', index + 1 >= day)
+                adventDay.classList.toggle('pastday', index - 2 < day)
+            });
+        });
+    </script>
+
+</body>
+
+</html>
